@@ -1,11 +1,17 @@
 package com.example.demo.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
-public class InvertedIndex {
+
+public class InvertedIndex implements Serializable {
+	
+
+	private static final long serialVersionUID = 1L;
 	
 	private HashMap<String, PostingList> invertedIndex;
 	
@@ -27,6 +33,30 @@ public class InvertedIndex {
 		postingList.addDocument(docID,position);
 		invertedIndex.put(term, postingList);
 	}
+	
+	public boolean deleteFile(int docID) {
+		
+		Iterator termIt = this.invertedIndex.entrySet().iterator();
+		while (termIt.hasNext()) {
+			Map.Entry<String, PostingList> entry = (Entry<String, PostingList>) termIt.next();
+			String key = entry.getKey();
+			PostingList value = entry.getValue();
+			Iterator posIt = value.getDocs().entrySet().iterator();
+			while (posIt.hasNext()) {
+				Map.Entry<Integer, TreeSet<Integer>> posentry = (Entry<Integer, TreeSet<Integer>>) posIt.next();
+				Integer poskey = posentry.getKey();
+				if ( poskey == docID) {
+					posIt.remove();
+					value.decreaseFreq();
+				}
+			}
+			if (value.getDocs().size() == 0) {
+				termIt.remove();
+			}
+		}
+		
+		return true;
+	}
 
 	@Override
 	public String toString() {
@@ -39,7 +69,7 @@ public class InvertedIndex {
 		}
 		return ret;
 	}
-	
+
 	
 	
 	

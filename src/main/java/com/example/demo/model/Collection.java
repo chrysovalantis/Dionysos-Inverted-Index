@@ -4,16 +4,21 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 
 import com.example.demo.service.PorterStemmer;
 
-public class Collection {
+public class Collection implements Serializable {
+	
+
+	private static final long serialVersionUID = 1L;
 	
 	private String name;
 	private InvertedIndex index;
@@ -62,7 +67,7 @@ public class Collection {
 	public void setFiles(HashMap<Integer, String> files) {
 		this.files = files;
 	}
-
+	
 	public boolean addDocument(Path newPath,String filename) {
 
         try {
@@ -119,6 +124,25 @@ public class Collection {
         this.size++;
 		return true;
 		
+	}
+	
+	public Boolean deleteFile(String filename) {
+		boolean flag = false;
+		for (Entry<Integer, String> entry : this.files.entrySet()) {
+			Integer key = entry.getKey();
+			String value = entry.getValue();
+			if ( value.compareTo(filename) == 0) {
+				this.files.remove(key);
+				this.index.deleteFile(key);
+				flag=true;
+				break;
+			}
+		}
+		
+		if(!flag)
+			return false;
+		
+		return true;
 	}
 
 	@Override

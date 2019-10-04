@@ -1,13 +1,15 @@
 package com.example.demo.model;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class PostingList {
+public class PostingList implements Serializable{
 
+
+	private static final long serialVersionUID = 1L;
+	
 	private int freq;
 	private TreeMap<Integer, TreeSet<Integer>> docs;
 	
@@ -25,6 +27,11 @@ public class PostingList {
 	public void setFreq(int freq) {
 		this.freq = freq;
 	}
+	
+	public void decreaseFreq() {
+		this.freq--;
+	}
+	
 	
 	public TreeMap<Integer, TreeSet<Integer>> getDocs() {
 		return docs;

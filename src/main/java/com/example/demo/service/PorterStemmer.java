@@ -3,11 +3,15 @@ package com.example.demo.service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public class PorterStemmer {
+public class PorterStemmer implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+
 	/**
      * Stemmer, implementing the Porter Stemming Algorithm
      *

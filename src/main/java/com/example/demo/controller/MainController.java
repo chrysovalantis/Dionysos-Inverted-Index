@@ -1,24 +1,17 @@
 package com.example.demo.controller;
 
-import org.springframework.stereotype.Controller;
 
-import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -33,6 +26,7 @@ import exceptions.FileStorageException;
 @RestController
 @RequestMapping("/collections")
 public class MainController {
+	
 	
 	@Autowired
 	private FileStorageService fileStorageService;
@@ -57,6 +51,19 @@ public class MainController {
         return col.toString();
     }
     
+    @RequestMapping(value = { "/files/{directory}" }, method = RequestMethod.GET)
+    public HashMap<Integer, String> printFiles(@PathVariable String directory) {
+    	
+    	if (!collections.getCollections().containsKey(directory)){
+    		HashMap<Integer, String> resp = new HashMap<Integer, String>();
+    		resp.put(-1, "Directory Not Found");
+    		return resp;
+    	}
+    	Collection col = collections.getCollections().get(directory);
+    	
+        return col.getFiles();
+    }
+    
     /**
      * Create a new collection
      * @param collection
@@ -65,7 +72,6 @@ public class MainController {
     @RequestMapping(value = { "/{name}" }, method = RequestMethod.POST)
     String createNewCollection(@PathVariable String name) {
     	String response = collections.addCollection(name);
-    	
 		return response;
     }
     
@@ -98,6 +104,28 @@ public class MainController {
                 .stream()
                 .map(file -> uploadFile(directory, file))
                 .collect(Collectors.toList());
+    }
+    
+    @RequestMapping(value = { "/deleteDirectory/{directory}" }, method = RequestMethod.DELETE)
+    public String deleteDirectory(@PathVariable String directory) {
+        
+    	Boolean ret = collections.deleteCollection(directory);
+    	
+    	if(ret == false) {
+    		return "Directory Cannot Be Deleted";
+    	}
+    	return "Directory Deleted!";
+    }
+    
+    @RequestMapping(value = { "/deleteFile/" }, method = RequestMethod.DELETE)
+    public String deleteDirectory(@RequestParam String directory, @RequestParam String filename) {
+        
+    	Boolean ret = collections.deleteFile(directory, filename);
+    	
+    	if(ret == false) {
+    		return "File Cannot Be Deleted";
+    	}
+    	return "File Deleted!";
     }
     
     
