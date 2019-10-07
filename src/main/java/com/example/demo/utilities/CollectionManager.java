@@ -206,7 +206,6 @@ public class CollectionManager implements Serializable {
 		}
 		Collection collection = collections.get(collectionName);
 		
-		saveCollections();
 		boolean ret = false;
 		File file = new File(Paths.get(root, collectionName,filename).toString());
 		if (!file.exists()) {
@@ -215,6 +214,7 @@ public class CollectionManager implements Serializable {
 		} else {
 			try {
 				ret = collection.deleteFile(filename);
+				saveCollections();
 				delete(file);
 			} catch (IOException e) {
 				e.printStackTrace();

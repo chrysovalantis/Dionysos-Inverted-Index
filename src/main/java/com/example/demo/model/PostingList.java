@@ -47,6 +47,23 @@ public class PostingList implements Serializable{
 		docs.put(docID, positions);
 		this.freq ++;
 	}
+	
+	public void addDocumentQuery(int docID, TreeSet<Integer> positions) {
+		//System.out.println(docID + " "+ position);
+		if (docs.containsKey(docID)) {
+			docs.merge(docID, positions, (oldValue, newValue) ->{
+				TreeSet<Integer> newPositions = new TreeSet<Integer>();
+				newPositions.addAll(oldValue);
+				newPositions.addAll(newValue);
+				return newPositions;
+			});
+		}
+		else {
+			docs.put(docID, positions);
+			this.freq ++;
+		}
+		
+	}
 
 	@Override
 	public String toString() {

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
-import com.example.demo.service.PorterStemmer;
+
 
 public class Collection implements Serializable {
 	
@@ -26,14 +26,13 @@ public class Collection implements Serializable {
 	
 	private HashMap<Integer, String> files;
 	
-	private PorterStemmer porterStemmer;
+	
 
 	public Collection(String name) {
 		this.name = name;
 		this.size = 0;
 		this.index = new InvertedIndex();
 		this.files = new HashMap<>();
-		this.porterStemmer = new PorterStemmer();
 	}
 
 	public String getName() {
@@ -97,7 +96,6 @@ public class Collection implements Serializable {
 
             int position = 1;
             while(tokenizer.hasMoreTokens()){
-            	
                 String word = tokenizer.nextToken().toLowerCase();
                 // Skip if the word is a stop word
                 List<String> stopwords = Files.readAllLines(Paths.get("english_stopwords.txt"));
@@ -105,11 +103,8 @@ public class Collection implements Serializable {
                     position++;
                     continue;
                 }
-
-                //Stemming
-                String term = porterStemmer.executeStemming(word);
                 //System.out.print(term+ ": ");
-                index.addTerm(term,id,position);
+                index.addTerm(word,id,position);
                 position++;
             }
 

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,10 +19,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.demo.form.UploadFileResponse;
 import com.example.demo.model.Collection;
+import com.example.demo.model.PostingList;
 import com.example.demo.service.FileStorageService;
 import com.example.demo.utilities.CollectionManager;
+import com.example.demo.utilities.QueryManager;
 
 import exceptions.FileStorageException;
+import exceptions.QueryParserException;
 
 @RestController
 @RequestMapping("/collections")
@@ -104,6 +108,22 @@ public class MainController {
                 .stream()
                 .map(file -> uploadFile(directory, file))
                 .collect(Collectors.toList());
+    }
+    
+    @RequestMapping(value = { "/search/{directory}" }, method = RequestMethod.POST)
+    public String search(@PathVariable String directory, @RequestParam("query") String query) throws QueryParserException {
+    	PostingList result = new PostingList();
+    	if (!collections.getCollections().containsKey(directory)){
+    		HashMap<Integer, String> resp = new HashMap<Integer, String>();
+    		resp.put(-1, "Directory Not Found");
+    		return result.toString();
+    	}
+    	Collection col = collections.getCollections().get(directory);
+    	QueryManager qm = new QueryManager(query);
+    	result = qm.queryParser(col.getIndex());
+    	
+    	return result.toString();
+    	
     }
     
     @RequestMapping(value = { "/deleteDirectory/{directory}" }, method = RequestMethod.DELETE)

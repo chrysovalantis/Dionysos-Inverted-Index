@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.example.demo.service.PorterStemmer;
+
 import java.util.TreeSet;
 
 
@@ -14,9 +17,11 @@ public class InvertedIndex implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private HashMap<String, PostingList> invertedIndex;
+	private PorterStemmer porterStemmer;
 	
 	public InvertedIndex() {
 		invertedIndex = new HashMap<>();
+		porterStemmer = new PorterStemmer();
 	}
 
 	public HashMap<String, PostingList> getInvertedIndex() {
@@ -26,9 +31,18 @@ public class InvertedIndex implements Serializable {
 	public void setInvertedIndex(HashMap<String, PostingList> invertedIndex) {
 		this.invertedIndex = invertedIndex;
 	}
+	
+	private String prepareTerm(String term) {
+//		System.out.println("Before Term: "+term);
+		term = term.toLowerCase();
+		term = term.replaceAll("\\p{Punct}", "");
+		term = porterStemmer.executeStemming(term);
+//        System.out.println("After Term: "+term);
+		return term;
+	}
 
 	public void addTerm(String term, int docID, int position) {
-		
+		term = prepareTerm(term);
 		PostingList postingList = invertedIndex.getOrDefault(term,new PostingList());
 		postingList.addDocument(docID,position);
 		invertedIndex.put(term, postingList);
@@ -36,14 +50,13 @@ public class InvertedIndex implements Serializable {
 	
 	public boolean deleteFile(int docID) {
 		
-		Iterator termIt = this.invertedIndex.entrySet().iterator();
+		Iterator<Entry<String, PostingList>> termIt = this.invertedIndex.entrySet().iterator();
 		while (termIt.hasNext()) {
-			Map.Entry<String, PostingList> entry = (Entry<String, PostingList>) termIt.next();
-			String key = entry.getKey();
+			Map.Entry<String, PostingList> entry =  termIt.next();
 			PostingList value = entry.getValue();
-			Iterator posIt = value.getDocs().entrySet().iterator();
+			Iterator<Entry<Integer, TreeSet<Integer>>> posIt = value.getDocs().entrySet().iterator();
 			while (posIt.hasNext()) {
-				Map.Entry<Integer, TreeSet<Integer>> posentry = (Entry<Integer, TreeSet<Integer>>) posIt.next();
+				Map.Entry<Integer, TreeSet<Integer>> posentry = posIt.next();
 				Integer poskey = posentry.getKey();
 				if ( poskey == docID) {
 					posIt.remove();
@@ -56,6 +69,10 @@ public class InvertedIndex implements Serializable {
 		}
 		
 		return true;
+	}
+	
+	public PostingList search(String term) {
+		return this.invertedIndex.get(prepareTerm(term));
 	}
 
 	@Override
