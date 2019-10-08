@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
+import java.util.Set;
 
 
 
@@ -139,6 +140,10 @@ public class Collection implements Serializable {
 			return false;
 		
 		return true;
+	}
+	
+	public Set<String> printTerms() {
+		return this.index.getInvertedIndex().keySet();
 	}
 
 	@Override

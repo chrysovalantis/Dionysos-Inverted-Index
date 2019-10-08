@@ -1,10 +1,6 @@
 package com.example.demo.utilities;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeSet;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import com.example.demo.model.InvertedIndex;
 import com.example.demo.model.PostingList;
@@ -47,7 +43,7 @@ public class QueryManager {
 		for (int i = 0; i < queryArray.length; i++) {
 			if (termA == null && op == null ) {
 				if (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0) {
-					throw new QueryParserException("Query Not Valid: "+ this.query+ " \n");
+					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
 				if (queryArray[i].compareTo("NOT") == 0) {
 					op = Operations.NOT;
@@ -61,7 +57,7 @@ public class QueryManager {
 			}
 			if (termA == null && op != null) {
 				if (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0 || queryArray[i].compareTo("NOT") == 0) {
-					throw new QueryParserException("Query Not Valid: "+ this.query+ " \n");
+					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
 				else {
 					Query tmp = new Query();
@@ -92,19 +88,19 @@ public class QueryManager {
 					op = Operations.NOT;
 				}
 				else {
-					throw new QueryParserException("Query Not Valid: "+ this.query+ " \n");
+					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
 				continue;
 			}
 			if (termA != null && op !=null) {
 				if (op == Operations.NOT && (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0 || queryArray[i].compareTo("NOT") == 0)) {
-					throw new QueryParserException("Query Not Valid: "+ this.query+ " \n");
+					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
 				if (op == Operations.AND && (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0)) {
-					throw new QueryParserException("Query Not Valid: "+ this.query+ " \n");
+					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
 				if (op == Operations.OR && (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0)) {
-					throw new QueryParserException("Query Not Valid: "+ this.query+ " \n");
+					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
 				if (op == Operations.AND && queryArray[i].compareTo("NOT") == 0 ) {
 					op = Operations.NOT;

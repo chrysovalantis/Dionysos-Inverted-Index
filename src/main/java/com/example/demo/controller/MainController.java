@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.demo.form.DirectoryJSONResponse;
 import com.example.demo.form.DirectoryResponse;
 import com.example.demo.form.SearchResponse;
 import exceptions.*;
@@ -60,8 +61,18 @@ public class MainController {
     	Collection col = collections.getCollections().get(directory);
 
     	if(checkJson)
-    		return new ResponseEntity<Object>(new DirectoryResponse(true,col.toString()), HttpStatus.OK);
+    		return new ResponseEntity<Object>(new DirectoryJSONResponse(true,col), HttpStatus.OK);
         return new ResponseEntity<Object>(col.toString(), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = { "/printTerms/{directory}" }, method = RequestMethod.GET)
+    public ResponseEntity<Object> printTerms(@PathVariable String directory) throws CollectionNotFoundException{
+    	if (!collections.getCollections().containsKey(directory)){
+    		throw new CollectionNotFoundException();
+    	}
+    	Collection col = collections.getCollections().get(directory);
+    	
+        return new ResponseEntity<Object>(col.printTerms(), HttpStatus.OK);
     }
     
     @RequestMapping(value = { "/files/{directory}" }, method = RequestMethod.GET)
