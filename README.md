@@ -47,7 +47,7 @@ File -> Open Project from File System -> Directory
 |**DELETE** /collections/deleteDirectory/{collection}   | Delete the collection |
 |**DELETE** /collections/deleteFile    | Delete a file in the collection **(Parameters directory, filename Needed)** |
 
-## Query Language:
+## BNF Query Language
 ```bash
 QUERY := QUERY OPER TERM | TERM  
 TERM := STR | NEG STR
