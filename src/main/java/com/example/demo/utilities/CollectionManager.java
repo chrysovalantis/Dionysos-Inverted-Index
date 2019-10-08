@@ -16,7 +16,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 
 import com.example.demo.model.Collection;
-
+import exceptions.CollectionAlreadyExistsException;
+import exceptions.CollectionNotFoundException;
 
 
 public class CollectionManager implements Serializable {
@@ -53,7 +54,7 @@ public class CollectionManager implements Serializable {
  
         } catch (Exception ex) {
         	System.out.println("No available collections! New one created.");
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
     }
 	
@@ -86,10 +87,10 @@ public class CollectionManager implements Serializable {
 		
 	}
 	
-	public String addCollection(String name) {
+	public String addCollection(String name) throws CollectionNotFoundException {
 		
 		if(collections.containsKey(name)) {
-			return "Collection already exists!";
+			throw new CollectionAlreadyExistsException();
 		}
 		
 		Path path = Paths.get(root,name);
@@ -176,18 +177,17 @@ public class CollectionManager implements Serializable {
 		}
 	}
 	
-	public boolean deleteCollection(String collectionName) {
+	public boolean deleteCollection(String collectionName) throws CollectionNotFoundException {
 		
 		if(!collections.containsKey(collectionName)) {
-			return false;
+			throw new CollectionNotFoundException();
 		}
 		
 		collections.remove(collectionName);
 		saveCollections();
 		File directory = new File(Paths.get(root, collectionName).toString());
 		if (!directory.exists()) {
-			System.out.println("Directory does not exist.");
-			return false;
+			throw new CollectionNotFoundException();
 		} else {
 			try {
 				delete(directory);

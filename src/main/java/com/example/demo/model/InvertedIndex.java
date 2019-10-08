@@ -1,14 +1,10 @@
 package com.example.demo.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.example.demo.service.PorterStemmer;
-
-import java.util.TreeSet;
 
 
 public class InvertedIndex implements Serializable {
@@ -16,19 +12,19 @@ public class InvertedIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private HashMap<String, PostingList> invertedIndex;
+	private TreeMap<String, PostingList> invertedIndex;
 	private PorterStemmer porterStemmer;
 	
 	public InvertedIndex() {
-		invertedIndex = new HashMap<>();
+		invertedIndex = new TreeMap<>();
 		porterStemmer = new PorterStemmer();
 	}
 
-	public HashMap<String, PostingList> getInvertedIndex() {
+	public TreeMap<String, PostingList> getInvertedIndex() {
 		return invertedIndex;
 	}
 
-	public void setInvertedIndex(HashMap<String, PostingList> invertedIndex) {
+	public void setInvertedIndex(TreeMap<String, PostingList> invertedIndex) {
 		this.invertedIndex = invertedIndex;
 	}
 	
@@ -49,7 +45,6 @@ public class InvertedIndex implements Serializable {
 	}
 	
 	public boolean deleteFile(int docID) {
-		
 		Iterator<Entry<String, PostingList>> termIt = this.invertedIndex.entrySet().iterator();
 		while (termIt.hasNext()) {
 			Map.Entry<String, PostingList> entry =  termIt.next();

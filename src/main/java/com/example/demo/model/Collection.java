@@ -107,7 +107,7 @@ public class Collection implements Serializable {
                 index.addTerm(word,id,position);
                 position++;
             }
-
+			this.size++;
             files.put(id,filename);
             bf.close();
         } catch (FileNotFoundException e) {
@@ -116,7 +116,7 @@ public class Collection implements Serializable {
             e.printStackTrace();
         }
         System.out.println(index);
-        this.size++;
+
 		return true;
 		
 	}
@@ -130,6 +130,7 @@ public class Collection implements Serializable {
 				this.files.remove(key);
 				this.index.deleteFile(key);
 				flag=true;
+				this.size--;
 				break;
 			}
 		}
