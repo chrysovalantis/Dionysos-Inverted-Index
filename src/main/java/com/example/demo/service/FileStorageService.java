@@ -20,6 +20,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+/** This service is used to store files to the server
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 @Service
 public class FileStorageService {
 

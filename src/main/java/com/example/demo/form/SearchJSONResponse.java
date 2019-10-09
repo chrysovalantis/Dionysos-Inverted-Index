@@ -2,13 +2,13 @@ package com.example.demo.form;
 
 import com.example.demo.model.PostingList;
 
-public class SearchResponse {
+public class SearchJSONResponse {
 
-    private double time;
-    private String query;
-    private PostingList response;
+    private double time;            //time in milliseconds
+    private String query;           //the given query
+    private PostingList response;   //the response
 
-    public SearchResponse(double time, String query, PostingList response) {
+    public SearchJSONResponse(double time, String query, PostingList response) {
         this.time = time;
         this.query = query;
         this.response = response;

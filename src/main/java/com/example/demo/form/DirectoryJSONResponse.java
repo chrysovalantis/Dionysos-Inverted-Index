@@ -2,6 +2,10 @@ package com.example.demo.form;
 
 import com.example.demo.model.Collection;
 
+/** The JSON representation of a collection.
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 public class DirectoryJSONResponse {
 
 	private Boolean status;

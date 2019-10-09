@@ -11,6 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/** This class handles the responses of my exceptions.
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 @ControllerAdvice
 public class DirectoryExceptionController {
     @ExceptionHandler(value = CollectionNotFoundException.class)

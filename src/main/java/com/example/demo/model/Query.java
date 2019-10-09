@@ -5,6 +5,11 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+/** Every single query has 2 terms and one operation. Thus, this class represent that approach
+ *  and execute the AND, OR, NOT operations.
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 public class Query {
 	
 	private PostingList termA;
@@ -36,12 +41,19 @@ public class Query {
 	public void setTermB(PostingList termB) {
 		this.termB = termB;
 	};
-	
+
+
+	/** Execute the given boolean operation on the 2 posting list.
+	 *
+	 * @param oper
+	 * @return
+	 */
 	public PostingList operation(Operations oper){
 		
 		PostingList result = new PostingList();
 		
 		switch (oper) {
+
 		case AND:
 			if (this.termA == null || this.termB == null)
 				break;

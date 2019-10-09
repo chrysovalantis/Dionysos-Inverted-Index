@@ -1,5 +1,9 @@
 package com.example.demo.form;
 
+/** The response after uploading a file
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 public class UploadFileResponse {
     private String fileName;
     private String fileType;

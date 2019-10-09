@@ -5,13 +5,18 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/** Each term in the inverted index has a Posting List. The posting list contains the frequency of the word and
+ *  documents you cant find it. Also there are the positions of the word inside the document.
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 public class PostingList implements Serializable{
 
 
 	private static final long serialVersionUID = 1L;
 	
 	private int freq;
-	private TreeMap<Integer, TreeSet<Integer>> docs;
+	private TreeMap<Integer, TreeSet<Integer>> docs;			// TreeMap <docID, TreeSet<Positions>>
 	
 	
 	public PostingList() {
@@ -40,6 +45,11 @@ public class PostingList implements Serializable{
 		this.docs = docs;
 	}
 
+	/** Add a document to the posting list
+	 *
+	 * @param docID
+	 * @param position
+	 */
 	public void addDocument(int docID, int position) {
 		//System.out.println(docID + " "+ position);
 		TreeSet<Integer> positions = docs.getOrDefault(docID, new TreeSet<Integer>());
@@ -47,7 +57,12 @@ public class PostingList implements Serializable{
 		docs.put(docID, positions);
 		this.freq ++;
 	}
-	
+
+	/** This method used only for the creation of the search response
+	 *
+	 * @param docID
+	 * @param positions
+	 */
 	public void addDocumentQuery(int docID, TreeSet<Integer> positions) {
 		//System.out.println(docID + " "+ position);
 		if (docs.containsKey(docID)) {

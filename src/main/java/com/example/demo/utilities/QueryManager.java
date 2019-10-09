@@ -9,6 +9,10 @@ import com.example.demo.model.Query.Operations;
 
 import exceptions.QueryParserException;
 
+/** This class handles the query given by the user
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 public class QueryManager {
 
 	private String query;
@@ -24,8 +28,13 @@ public class QueryManager {
 	public void setQuery(String query) {
 		this.query = query;
 	}
-	
-	
+
+	/** This function parse the query from the user and response with the answer
+	 *
+	 * @param index
+	 * @return
+	 * @throws QueryParserException
+	 */
 	public PostingList queryParser(InvertedIndex index) throws QueryParserException {
 		
 		Query q = new Query();
@@ -37,28 +46,32 @@ public class QueryManager {
 		PostingList result = new PostingList();
 		PostingList allDocs = new PostingList();
 		
-		this.query = this.query.trim().replaceAll(" +", " ");
-		String queryArray[] = this.query.split(" ");
+		this.query = this.query.trim().replaceAll(" +", " ");		//remove all the extra space from the query
+		String queryArray[] = this.query.split(" ");							//split the query
 		Boolean ornotflag = false;
+		//Traverse through query. You can add as much terms and operations as you want.
 		for (int i = 0; i < queryArray.length; i++) {
+			//check the first term
 			if (termA == null && op == null ) {
-				if (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0) {
+				if (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0) { //the first term cannot be AND or OR
 					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
 				if (queryArray[i].compareTo("NOT") == 0) {
 					op = Operations.NOT;
 				}
 				else {
-					termA = queryArray[i];
-					valueA = index.search(termA);
+					termA = queryArray[i];							//save the term as string
+					valueA = index.search(termA);					//get the posting list of the term
 					q.setTermA(valueA);
 				}
 				continue;
 			}
+			// check if the first term was NOT and the termA is not set
 			if (termA == null && op != null) {
-				if (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0 || queryArray[i].compareTo("NOT") == 0) {
+				if (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0 || queryArray[i].compareTo("NOT") == 0) { //not allowed to have to operations next to each other
 					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
+				//Execute NOT termA query. Gives you all the docs that don't include the termA
 				else {
 					Query tmp = new Query();
 					termA = queryArray[i];
@@ -77,6 +90,7 @@ public class QueryManager {
 					continue;
 				}				
 			}
+			//If termA is set and operation is not then this term must be an operation
 			if (termA != null && op == null) {
 				if(queryArray[i].compareTo("AND") == 0) {
 					op = Operations.AND;
@@ -92,6 +106,7 @@ public class QueryManager {
 				}
 				continue;
 			}
+			//if termA and operation is set then we have to check for the second term (termB) and execute the query
 			if (termA != null && op !=null) {
 				if (op == Operations.NOT && (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0 || queryArray[i].compareTo("NOT") == 0)) {
 					throw new QueryParserException("Query Not Valid: "+ this.query);
@@ -102,17 +117,20 @@ public class QueryManager {
 				if (op == Operations.OR && (queryArray[i].compareTo("AND") == 0 || queryArray[i].compareTo("OR") == 0)) {
 					throw new QueryParserException("Query Not Valid: "+ this.query);
 				}
+				//check the combination AND NOT
 				if (op == Operations.AND && queryArray[i].compareTo("NOT") == 0 ) {
 					op = Operations.NOT;
 					continue;
 				}
+				//check the comination OR NOT
 				if (op == Operations.OR && queryArray[i].compareTo("NOT") == 0 ) {
 					op = Operations.OR;
 					ornotflag = true;
 					continue;
 				}
-				termB = queryArray[i];
-				valueB = index.search(termB);
+				termB = queryArray[i];				//save termB
+				valueB = index.search(termB);		//get the posting list of the termB
+				//if there is an OR NOT query we are executing the following code. Return everything that is not include termB union termA
 				if(ornotflag) {
 					Query tmp = new Query();
 					if (allDocs.getDocs().size() == 0) {
@@ -125,6 +143,7 @@ public class QueryManager {
 					q.setTermB(tmp.operation(Operations.NOT));
 					ornotflag = false;
 				}
+				//else execute normal query
 				else {
 					q.setTermB(valueB);
 				}
@@ -134,6 +153,7 @@ public class QueryManager {
 				op = null;
 			}
 		}
+		//if it is the first term
 		if (termA!=null && queryArray.length == 1) {
 			result = valueA;
 		}

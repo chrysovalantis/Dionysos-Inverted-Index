@@ -15,18 +15,20 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 
-
+/** Represent a directory. The collection hold the name of it, the inverted index, the number of files inside,
+ *  and the name of files.
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 public class Collection implements Serializable {
-	
 
 	private static final long serialVersionUID = 1L;
 	
-	private String name;
-	private InvertedIndex index;
-	private int size;
+	private String name;                        //name of the directory
+	private InvertedIndex index;                //the inverted index
+	private int size;                           //the size of the directory
 	
-	private HashMap<Integer, String> files;
-	
+	private HashMap<Integer, String> files;     //the id and the name of the file inside the directory
 	
 
 	public Collection(String name) {
@@ -67,7 +69,13 @@ public class Collection implements Serializable {
 	public void setFiles(HashMap<Integer, String> files) {
 		this.files = files;
 	}
-	
+
+    /** Read a document, extract the description and add the documents.
+     *
+     * @param newPath
+     * @param filename
+     * @return
+     */
 	public boolean addDocument(Path newPath,String filename) {
 
         try {
@@ -75,7 +83,7 @@ public class Collection implements Serializable {
             String line = "";
             int id=-1;
             line=bf.readLine();
-            String csv[] = line.trim().split(","); 
+            String csv[] = line.trim().split(",");      //split the csv file
             if(csv.length<1) {
             	bf.close();
                 return false;
@@ -86,26 +94,26 @@ public class Collection implements Serializable {
                 ex.printStackTrace();
             }
             
-            String split[] = line.split("\"");
+            String split[] = line.split("\"");          //split using " to get the description
             if(split.length<=2) {
             	bf.close();
                 return false;
             }
 
             String description = split[1];
-            StringTokenizer tokenizer = new StringTokenizer(description);
+            StringTokenizer tokenizer = new StringTokenizer(description);       //tokenize the description
 
             int position = 1;
             while(tokenizer.hasMoreTokens()){
                 String word = tokenizer.nextToken().toLowerCase();
                 // Skip if the word is a stop word
-                List<String> stopwords = Files.readAllLines(Paths.get("english_stopwords.txt"));
-                if(stopwords.contains(word)) {
+                List<String> stopwords = Files.readAllLines(Paths.get("english_stopwords.txt"));    // take the list of the stopwords
+                if(stopwords.contains(word)) {                                                           // ignore the stopwords but increase the position
                     position++;
                     continue;
                 }
                 //System.out.print(term+ ": ");
-                index.addTerm(word,id,position);
+                index.addTerm(word,id,position);                                                         // add the word to the inverted index
                 position++;
             }
 			this.size++;
@@ -121,7 +129,12 @@ public class Collection implements Serializable {
 		return true;
 		
 	}
-	
+
+    /** Delete a file from the collection and update the inverted index.
+     *
+     * @param filename
+     * @return
+     */
 	public Boolean deleteFile(String filename) {
 		boolean flag = false;
 		for (Entry<Integer, String> entry : this.files.entrySet()) {

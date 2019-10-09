@@ -19,7 +19,9 @@ import com.example.demo.model.Collection;
 import exceptions.CollectionAlreadyExistsException;
 import exceptions.CollectionNotFoundException;
 
-
+/** This class manages all the collection of the system.
+ *
+ */
 public class CollectionManager implements Serializable {
 	
 
@@ -34,7 +36,10 @@ public class CollectionManager implements Serializable {
 		collections = new HashMap<>();
 		this.ReadObjectFromFile();
 	}
-	
+
+    /** Read the serializable collection from the disk if exists.
+     *
+     */
 	public void ReadObjectFromFile() {
 		 
         try {
@@ -57,8 +62,11 @@ public class CollectionManager implements Serializable {
             //ex.printStackTrace();
         }
     }
-	
-	
+
+    /** Save the collection to a specific location C:/Dionysos/collections.
+     *
+     * @return
+     */
 	private Boolean saveCollections() {
 		
         try {
@@ -86,7 +94,13 @@ public class CollectionManager implements Serializable {
         return true;
 		
 	}
-	
+
+    /** Add a new collection
+     *
+     * @param name
+     * @return
+     * @throws CollectionNotFoundException
+     */
 	public String addCollection(String name) throws CollectionNotFoundException {
 		
 		if(collections.containsKey(name)) {
@@ -115,7 +129,13 @@ public class CollectionManager implements Serializable {
 		this.collections = collections;
 	}
 
-
+    /** Add documents to specific collection
+     *
+     * @param collectionName
+     * @param path
+     * @param fileName
+     * @return
+     */
 	public boolean addDocumentToCollection(String collectionName, String path, String fileName) {
 		
 		if(!collections.containsKey(collectionName)) {
@@ -142,7 +162,12 @@ public class CollectionManager implements Serializable {
 		
 		return true;
 	}
-	
+
+    /** Delete a file or folder from the disk
+     *
+     * @param file
+     * @throws IOException
+     */
 	private static void delete(File file) throws IOException{
 	 
 		if (file.isDirectory()) {
@@ -176,7 +201,13 @@ public class CollectionManager implements Serializable {
 			System.out.println("File is deleted : " + file.getAbsolutePath());
 		}
 	}
-	
+
+    /** Delete the collection from the disk and remove it from the collections list
+     *
+     * @param collectionName
+     * @return
+     * @throws CollectionNotFoundException
+     */
 	public boolean deleteCollection(String collectionName) throws CollectionNotFoundException {
 		
 		if(!collections.containsKey(collectionName)) {
@@ -198,7 +229,13 @@ public class CollectionManager implements Serializable {
 		}
 		return true;
 	}
-	
+
+    /** Delete a file from the disk and remove it from collection
+     *
+     * @param collectionName
+     * @param filename
+     * @return
+     */
 	public boolean deleteFile(String collectionName, String filename) {
 		
 		if(!collections.containsKey(collectionName)) {

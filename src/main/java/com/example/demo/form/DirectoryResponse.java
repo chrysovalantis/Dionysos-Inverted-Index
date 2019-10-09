@@ -1,5 +1,9 @@
 package com.example.demo.form;
 
+/** The pretty representation of a directory
+ *
+ * @author Chrysovalantis Christodoulou
+ */
 public class DirectoryResponse {
 
     private Boolean status;
