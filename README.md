@@ -30,7 +30,7 @@ File -> Open Project from File System -> Directory
 
 ## Running
 * Run Spring Boot App
-* Test the app using [My Postman Collection](https://www.getpostman.com/collections/35f4a6289701ac320b10)
+* Test the app using [My Postman Collection](https://app.getpostman.com/join-team?invite_code=90a601630813ead481b23e57fadf67da&ws=19702b79-c955-4eaa-b81c-f5fb9b320c90)
 
 ## End Points
 
